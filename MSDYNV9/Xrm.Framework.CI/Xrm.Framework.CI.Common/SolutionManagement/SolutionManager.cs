@@ -210,6 +210,8 @@ namespace Xrm.Framework.CI.Common
                 var asyncResponse = OrganizationService.Execute(asyncRequest) as ExecuteAsyncResponse;
 
                 Guid asyncJobId = asyncResponse.AsyncJobId;
+                
+                UpdateAsyncOperationName(OrganizationService, asyncJobId, info.UniqueName);
 
                 Logger.LogVerbose("Awaiting for Async Operation Completion");
 
@@ -1138,6 +1140,20 @@ namespace Xrm.Framework.CI.Common
             return result;
         }
 
+        private void UpdateAsyncOperationName(IOrganizationService service, Guid asyncOperationId, string friendlyMessage)
+        {
+            try
+            {
+                Entity asyncOperation = new Entity("asyncoperation", asyncOperationId);
+                asyncOperation["friendlymessage"] = friendlyMessage;
+                service.Update(asyncOperation);
+                Logger.LogVerbose("update AsyncOperation friendlyMessage: {0}", friendlyMessage);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogVerbose("update AsyncOperation friendlyMessage failed: {0}", ex.Message);
+            }
+        }
         #endregion
     }
 
