@@ -27,7 +27,7 @@ Write-Verbose 'Entering ImportSolution.ps1'
 
 #Script Location
 $scriptPath = split-path -parent $MyInvocation.MyCommand.Definition
-Write-Host "Script Path: $scriptPath"
+Write-Verbose "Script Path: $scriptPath"
 
 #Load XrmCIFramework
 $xrmCIToolkit = $scriptPath + "\Xrm.Framework.CI.PowerShell.Cmdlets.dll"
