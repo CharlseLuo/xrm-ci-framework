@@ -1,4 +1,4 @@
-﻿using Microsoft.Crm.Sdk.Messages;
+using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Query;
@@ -62,6 +62,7 @@ namespace Xrm.Framework.CI.Common
             bool holdingSolution,
             bool overrideSameVersion,
             bool importAsync,
+            bool uploadSolutionName,
             int sleepInterval,
             int asyncWaitTimeout,
             Guid? importJobId,
@@ -211,7 +212,11 @@ namespace Xrm.Framework.CI.Common
 
                 Guid asyncJobId = asyncResponse.AsyncJobId;
                 
-                UpdateAsyncOperationName(OrganizationService, asyncJobId, info.UniqueName);
+                if(uploadSolutionName)
+                {
+                    UpdateAsyncOperationFriendlyMessage(OrganizationService, asyncJobId, info.UniqueName);
+                }
+                
 
                 Logger.LogVerbose("Awaiting for Async Operation Completion");
 
@@ -310,6 +315,7 @@ namespace Xrm.Framework.CI.Common
                 options.HoldingSolution,
                 options.OverrideSameVersion,
                 options.ImportAsync,
+                options.UploadSolutionName,
                 options.SleepInterval,
                 options.AsyncWaitTimeout,
                 Guid.NewGuid(),
@@ -1140,7 +1146,7 @@ namespace Xrm.Framework.CI.Common
             return result;
         }
 
-        private void UpdateAsyncOperationName(IOrganizationService service, Guid asyncOperationId, string friendlyMessage)
+        private void UpdateAsyncOperationFriendlyMessage(IOrganizationService service, Guid asyncOperationId, string friendlyMessage)
         {
             try
             {
@@ -1427,6 +1433,7 @@ namespace Xrm.Framework.CI.Common
         public bool OverrideSameVersion { get; set; }
         public bool ImportAsync { get; set; }
         public bool ApplySolution { get; set; }
+        public bool UploadSolutionName { get; set; }
         public bool ApplyAsync { get; set; }
         public int SleepInterval { get; set; }
         public int AsyncWaitTimeout { get; set; }
@@ -1440,6 +1447,7 @@ namespace Xrm.Framework.CI.Common
             SleepInterval = 15;
             AsyncWaitTimeout = 15 * 60;
             ImportAsync = true;
+            UploadSolutionName = false;
         }
 
         #endregion
